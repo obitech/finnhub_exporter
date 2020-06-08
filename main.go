@@ -10,9 +10,18 @@ const (
 )
 
 func main() {
+	l, err := NewLogger("info")
+	defer l.Sync()
+	log := l.Sugar()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 	apiKey := os.Getenv(apiKeyEnv)
 	if apiKey == "" {
-		fmt.Printf("environment variable %q needs to be set\n", apiKeyEnv)
+		log.Errorw("environment variable needs to be set",
+			"env", apiKeyEnv,
+		)
 		os.Exit(1)
 	}
 }
