@@ -11,9 +11,14 @@ help:
 	@echo "Usage:"
 	@sed -n 's/^##//p' ${MAKEFILE_LIST} | column -t -s ':' |  sed -e 's/^/ /'
 
+.PHONY: prepare
+## prepare: prepares the build
+prepare:
+	go mod tidy
+
 .PHONY: build
 ## build: builds finnhub_exporter
-build:
+build: prepare
 	GO111MODULE=on CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) $(GO) build -o $(BIN_DIR)/$(BIN_NAME) main.go log.go
 
 .PHONY: run

@@ -37,13 +37,14 @@ func run(cmd *cobra.Command, args []string) {
 	log := l.Sugar()
 
 	apiKey := os.Getenv(apiKeyEnv)
-
 	if apiKey == "" {
 		log.Errorw("environment variable needs to be set",
 			"env", apiKeyEnv,
 		)
 		os.Exit(1)
 	}
+
+
 }
 
 func init(){
