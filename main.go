@@ -12,19 +12,19 @@ import (
 )
 
 const (
-	apiKeyEnv = "FINNHUB_API_KEY"
+	apiKeyEnv     = "FINNHUB_API_KEY"
 	endpointParam = "endpoint"
-	symbolParam = "symbol"
-	isinParam = "isin"
-	cusipParam = "cusip"
+	symbolParam   = "symbol"
+	isinParam     = "isin"
+	cusipParam    = "cusip"
 )
 
 var (
 	address = ":9780"
 	rootCmd = &cobra.Command{
-		Use: "run",
+		Use:   "run",
 		Short: "Export financial data from finnhub.io",
-		Run: run,
+		Run:   run,
 	}
 )
 
@@ -34,8 +34,6 @@ func Execute() {
 		os.Exit(1)
 	}
 }
-
-
 
 func run(cmd *cobra.Command, args []string) {
 	l, err := NewLogger("info")
@@ -54,7 +52,7 @@ func run(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	// TODO: Adjust with Prometheus Scrape Timout Header
+	// TODO: Adjust with Prometheus Scrape-Timout Header
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(30*time.Second))
 	defer cancel()
 	client, auth := NewFinnhubClient(ctx, apiKey)
@@ -70,7 +68,7 @@ func run(cmd *cobra.Command, args []string) {
 	fmt.Println(profile)
 }
 
-func init(){
+func init() {
 	f := rootCmd.Flags()
 	f.StringVarP(&address, "web.listen-address", "a", address, "The address to listen on for HTTP requests.")
 }

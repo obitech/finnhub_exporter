@@ -8,12 +8,12 @@ import (
 )
 
 type RequestFn interface {
-	Do(finnhub.DefaultApiService, context.Context, *prometheus.Registry) error
+	Do(context.Context, finnhub.DefaultApiService, *prometheus.Registry, StockID) error
 }
 
 type CompanyProfile2 finnhub.CompanyProfile2
 
-func (c CompanyProfile2) Do(client finnhub.DefaultApiService, ctx context.Context, id StockID, registry *prometheus.Registry) error {
+func (c CompanyProfile2) Do(ctx context.Context, client finnhub.DefaultApiService, registry *prometheus.Registry, id StockID) error {
 	return nil
 }
 
@@ -23,4 +23,3 @@ type StockID struct {
 	ISIN   string
 	CUSIP  string
 }
-

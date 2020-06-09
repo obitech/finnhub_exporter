@@ -2,10 +2,12 @@ package main
 
 import (
 	"net/http"
+	"net/http/httptest"
 	"net/url"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/zap"
 
 	"obitech/finnhub_exporter/endpoint"
 )
@@ -13,30 +15,30 @@ import (
 func TestGetStockID(t *testing.T) {
 	data := []struct {
 		name     string
-		params  url.Values
+		params   url.Values
 		expected *endpoint.StockID
 		err      bool
 	}{
 		{
-			name:     "empty params",
-			err:      true,
+			name: "empty params",
+			err:  true,
 		},
 		{
-			name: "only symbol",
+			name:   "only symbol",
 			params: url.Values{"symbol": []string{"AAPL"}},
 			expected: &endpoint.StockID{
 				Symbol: "AAPL",
 			},
 		},
 		{
-			name: "only cusip",
+			name:   "only cusip",
 			params: url.Values{"cusip": []string{"abc"}},
 			expected: &endpoint.StockID{
 				CUSIP: "abc",
 			},
 		},
 		{
-			name: "only isin",
+			name:   "only isin",
 			params: url.Values{"isin": []string{"123"}},
 			expected: &endpoint.StockID{
 				ISIN: "123",
@@ -45,17 +47,16 @@ func TestGetStockID(t *testing.T) {
 		{
 			name: "symbol,isin,cusip",
 			params: url.Values{
-				"isin": []string{"123"},
+				"isin":   []string{"123"},
 				"symbol": []string{"AAPL"},
-				"cusip": []string{"abc"},
+				"cusip":  []string{"abc"},
 			},
 			expected: &endpoint.StockID{
-				ISIN: "123",
+				ISIN:   "123",
 				Symbol: "AAPL",
-				CUSIP: "abc",
+				CUSIP:  "abc",
 			},
 		},
-
 	}
 
 	for _, test := range data {
@@ -74,6 +75,67 @@ func TestGetStockID(t *testing.T) {
 				}
 			}
 			assert.Equal(t, actual, test.expected, "should be equal")
+		})
+	}
+}
+
+func TestQueryHandler(t *testing.T) {
+	log := zap.NewNop()
+	var data = []struct {
+		name           string
+		path           string
+		apiKey         string
+		log            *zap.Logger
+		expectedStatus int
+	}{
+		{
+			name:           "missing endpoint param",
+			path:           "/test",
+			log:            log,
+			expectedStatus: http.StatusBadRequest,
+		},
+		{
+			name:           "endpoint present, missing stock id params",
+			path:           "/test?endpoint=abc",
+			log:            log,
+			expectedStatus: http.StatusBadRequest,
+		},
+		{
+			name:           "endpoint present, symbol passed",
+			path:           "/test?endpoint=abc&symbol=AAPL",
+			log:            log,
+			expectedStatus: http.StatusOK,
+		},
+		{
+			name:           "endpoint present, ISIN passed",
+			path:           "/test?endpoint=abc&isin=123",
+			log:            log,
+			expectedStatus: http.StatusOK,
+		},
+		{
+			name:           "endpoint present, cusip passed",
+			path:           "/test?endpoint=abc&cusip=abc",
+			log:            log,
+			expectedStatus: http.StatusOK,
+		},
+		{
+			name:           "endpoint present, all passed",
+			path:           "/test?endpoint=abc&cusip=abc&symbol=AAPL&isin=123",
+			log:            log,
+			expectedStatus: http.StatusOK,
+		},
+	}
+
+	for _, test := range data {
+		t.Run(test.name, func(t *testing.T) {
+			req, err := http.NewRequest("GET", test.path, nil)
+			assert.NoError(t, err, "creating a test request shouldn't fail")
+
+			rr := httptest.NewRecorder()
+			handler := queryHandler(test.apiKey, test.log, true)
+			handler.ServeHTTP(rr, req)
+
+			assert.Equal(t, test.expectedStatus, rr.Code, rr.Body)
 		})
 	}
 }

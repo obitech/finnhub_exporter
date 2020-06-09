@@ -1,5 +1,5 @@
 GO 			?= go
-GOFMT 		?= $(go)fmt
+TEST_OPTS	?= -test.v
 BIN_DIR 	?= $(shell pwd)/bin
 BIN_NAME 	?= finnhub_exporter
 GOOS		?= darwin
@@ -14,12 +14,13 @@ help:
 .PHONY: prepare
 ## prepare: prepares the build
 prepare:
-	go mod tidy
+	$(GO) mod tidy
+	$(GO) fmt -x
 
 .PHONY: test
 ## test: runs unit tests
 test:
-	$(GO) test ./...
+	$(GO) test $(TEST_OPS) ./...
 
 .PHONY: build
 ## build: builds finnhub_exporter
