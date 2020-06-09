@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Finnhub-Stock-API/finnhub-go"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 
 	"obitech/finnhub_exporter/endpoint"
@@ -34,7 +34,7 @@ func getStockID(r *http.Request) (*endpoint.StockID, error) {
 	}, nil
 }
 
-func queryHandler(client *finnhub.DefaultApiService, apiKey string, log *zap.Logger, test bool) http.HandlerFunc {
+func queryHandler(apiKey string, log *zap.Logger, test bool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		endpointName := r.URL.Query().Get(endpointParam)
 		if endpointName == "" {
@@ -52,7 +52,7 @@ func queryHandler(client *finnhub.DefaultApiService, apiKey string, log *zap.Log
 		ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
 		defer cancel()
 
-		_, auth := NewFinnhubClient(ctx, apiKey)
+		client, auth := NewFinnhubClient(ctx, apiKey)
 		r = r.WithContext(auth)
 
 		stockID, err := getStockID(r)
@@ -98,5 +98,8 @@ func queryHandler(client *finnhub.DefaultApiService, apiKey string, log *zap.Log
 				zap.Duration("query_duration", time.Duration(duration)),
 			)
 		}
+
+		ph := promhttp.HandlerFor(registry, promhttp.HandlerOpts{})
+		ph.ServeHTTP(w, r)
 	}
 }

@@ -132,7 +132,7 @@ func TestQueryHandler(t *testing.T) {
 			assert.NoError(t, err, "creating a test request shouldn't fail")
 
 			rr := httptest.NewRecorder()
-			handler := queryHandler(nil, test.apiKey, test.log, true)
+			handler := queryHandler(test.apiKey, test.log, true)
 			handler.ServeHTTP(rr, req)
 
 			if assert.Equal(t, test.expectedStatus, rr.Code, rr.Body) {
