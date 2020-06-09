@@ -1,4 +1,4 @@
-package main
+package handler
 
 import (
 	"context"
@@ -13,7 +13,13 @@ import (
 	"obitech/finnhub_exporter/endpoint"
 )
 
-const promNamespace = "finnhub"
+const (
+	promNamespace = "finnhub"
+	endpointParam = "endpoint"
+	symbolParam   = "symbol"
+	isinParam     = "isin"
+	cusipParam    = "cusip"
+)
 
 var modules = map[string]endpoint.RequestFn{
 	"companyprofile2": endpoint.CompanyProfile2{},
@@ -34,7 +40,7 @@ func getStockID(r *http.Request) (*endpoint.StockID, error) {
 	}, nil
 }
 
-func queryHandler(apiKey string, log *zap.Logger, test bool) http.HandlerFunc {
+func QueryHandler(apiKey string, log *zap.Logger, test bool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		endpointName := r.URL.Query().Get(endpointParam)
 		if endpointName == "" {
@@ -52,7 +58,7 @@ func queryHandler(apiKey string, log *zap.Logger, test bool) http.HandlerFunc {
 		ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
 		defer cancel()
 
-		client, auth := NewFinnhubClient(ctx, apiKey)
+		client, auth := endpoint.NewFinnhubClient(ctx, apiKey)
 		r = r.WithContext(auth)
 
 		stockID, err := getStockID(r)

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/Finnhub-Stock-API/finnhub-go"
+	"github.com/antihax/optional"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
@@ -15,6 +16,15 @@ type RequestFn interface {
 type CompanyProfile2 finnhub.CompanyProfile2
 
 func (c CompanyProfile2) Do(ctx context.Context, client *finnhub.DefaultApiService, registry *prometheus.Registry, id *StockID) error {
+	opts := &finnhub.CompanyProfile2Opts{
+		Symbol: optional.NewString(id.Symbol),
+		Isin:   optional.NewString(id.ISIN),
+		Cusip:  optional.NewString(id.CUSIP),
+	}
+	_, _, err := client.CompanyProfile2(ctx, opts)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

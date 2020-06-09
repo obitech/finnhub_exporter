@@ -10,14 +10,12 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
+
+	"obitech/finnhub_exporter/handler"
 )
 
 const (
-	apiKeyEnv     = "FINNHUB_API_KEY"
-	endpointParam = "endpoint"
-	symbolParam   = "symbol"
-	isinParam     = "isin"
-	cusipParam    = "cusip"
+	apiKeyEnv = "FINNHUB_API_KEY"
 )
 
 var (
@@ -62,7 +60,7 @@ func run(cmd *cobra.Command, args []string) error {
 		os.Exit(1)
 	}
 
-	http.HandleFunc("/query", queryHandler(apiKey, log, false))
+	http.HandleFunc("/query", handler.QueryHandler(apiKey, log, false))
 	http.Handle("/metrics", promhttp.Handler())
 
 	srv := http.Server{Addr: address}
