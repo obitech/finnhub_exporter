@@ -5,6 +5,10 @@ BIN_NAME 	?= finnhub_exporter
 GOOS		?= darwin
 GOARCH		?= amd64
 
+.PHONY: all
+## all: runs 'prepare', 'test' and 'build'
+all: prepare test build
+
 .PHONY: help
 ## help: prints this help message
 help:
@@ -24,7 +28,7 @@ test:
 
 .PHONY: build
 ## build: builds finnhub_exporter
-build: prepare test
+build:
 	GO111MODULE=on CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) $(GO) build -o $(BIN_DIR)/$(BIN_NAME) .
 
 .PHONY: run

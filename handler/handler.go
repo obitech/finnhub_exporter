@@ -44,7 +44,7 @@ func QueryHandler(apiKey string, log *zap.Logger, test bool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		endpointName := r.URL.Query().Get(endpointParam)
 		if endpointName == "" {
-			http.Error(w, fmt.Sprintf("Missing URL parameter %q", endpointParam), http.StatusBadRequest)
+			http.Error(w, fmt.Sprintf("URL parameter %q missing", endpointParam), http.StatusBadRequest)
 			return
 		}
 
@@ -88,20 +88,20 @@ func QueryHandler(apiKey string, log *zap.Logger, test bool) http.HandlerFunc {
 
 		start := time.Now()
 		err = ep.Do(auth, client, registry, stockID)
-		duration := time.Since(start).Seconds()
-		queryDurationGauge.Set(duration)
+		duration := time.Since(start)
+		queryDurationGauge.Set(duration.Seconds())
 		if err != nil {
 			querySuccessGauge.Set(0)
 			log.Info("query to finnhub failed",
 				zap.Error(err),
-				zap.Duration("query_duration", time.Duration(duration)),
+				zap.Duration("query_duration", duration),
 			)
 		} else {
 			querySuccessGauge.Set(1)
 			log.Info("query to finnhub successful",
 				zap.String("endpoint", endpointName),
 				zap.String("stockID", stockID.String()),
-				zap.Duration("query_duration", time.Duration(duration)),
+				zap.Duration("query_duration", duration),
 			)
 		}
 

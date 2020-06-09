@@ -3,11 +3,14 @@ package endpoint
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"github.com/Finnhub-Stock-API/finnhub-go"
 	"github.com/antihax/optional"
 	"github.com/prometheus/client_golang/prometheus"
 )
+
+const promNamespace = "finnhub"
 
 type RequestFn interface {
 	Do(context.Context, *finnhub.DefaultApiService, *prometheus.Registry, *StockID) error
@@ -21,10 +24,27 @@ func (c CompanyProfile2) Do(ctx context.Context, client *finnhub.DefaultApiServi
 		Isin:   optional.NewString(id.ISIN),
 		Cusip:  optional.NewString(id.CUSIP),
 	}
-	_, _, err := client.CompanyProfile2(ctx, opts)
+	profile, _, err := client.CompanyProfile2(ctx, opts)
 	if err != nil {
 		return err
 	}
+
+	cp2Gauge := prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Namespace: promNamespace,
+			Name:      "company_profile_2",
+			Help:      "Displays general information of a company (free version of CompanyProfile)",
+		},
+		[]string{"country", "currency", "exchange", "ipo", "marketCapitalization", "name", "shareOutstanding", "ticker", "weburl", "logo", "finnhubIndustry"},
+	)
+	registry.MustRegister(cp2Gauge)
+	cp2Gauge.WithLabelValues(
+		profile.Country, profile.Currency, profile.Exchange, profile.Ipo,
+		strconv.FormatInt(profile.MarketCapitalization, 10), profile.Name,
+		strconv.FormatFloat(float64(profile.ShareOutstanding), 'g', -1, 32),
+		profile.Ticker, profile.Weburl, profile.Logo, profile.FinnhubIndustry,
+	).Set(1)
+
 	return nil
 }
 

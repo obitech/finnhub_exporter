@@ -1,6 +1,8 @@
 package main
 
-import "go.uber.org/zap"
+import (
+	"go.uber.org/zap"
+)
 
 func NewLogger(level string) (*zap.Logger, error) {
 	atom := zap.NewAtomicLevel()
