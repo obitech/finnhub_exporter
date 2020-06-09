@@ -1,14 +1,22 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
+	"time"
 
+	"github.com/Finnhub-Stock-API/finnhub-go"
+	"github.com/antihax/optional"
 	"github.com/spf13/cobra"
 )
 
 const (
 	apiKeyEnv = "FINNHUB_API_KEY"
+	endpointParam = "endpoint"
+	symbolParam = "symbol"
+	isinParam = "isin"
+	cusipParam = "cusip"
 )
 
 var (
@@ -27,6 +35,8 @@ func Execute() {
 	}
 }
 
+
+
 func run(cmd *cobra.Command, args []string) {
 	l, err := NewLogger("info")
 	if err != nil {
@@ -44,7 +54,20 @@ func run(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-
+	// TODO: Adjust with Prometheus Scrape Timout Header
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(30*time.Second))
+	defer cancel()
+	client, auth := NewFinnhubClient(ctx, apiKey)
+	opts := &finnhub.CompanyProfile2Opts{
+		Symbol: optional.NewString("AAPL"),
+	}
+	profile, _, err := client.CompanyProfile2(auth, opts)
+	if err != nil {
+		log.Errorw("unable to get CompanyProfile2",
+			"error", err,
+		)
+	}
+	fmt.Println(profile)
 }
 
 func init(){

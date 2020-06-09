@@ -16,12 +16,17 @@ help:
 prepare:
 	go mod tidy
 
+.PHONY: test
+## test: runs unit tests
+test:
+	$(GO) test ./...
+
 .PHONY: build
 ## build: builds finnhub_exporter
-build: prepare
-	GO111MODULE=on CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) $(GO) build -o $(BIN_DIR)/$(BIN_NAME) ./...
+build: prepare test
+	GO111MODULE=on CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) $(GO) build -o $(BIN_DIR)/$(BIN_NAME) .
 
 .PHONY: run
-## build: builds finnhub_exporter
+## run: runs finnhub_exporter
 run:
-	GO111MODULE=on CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) $(GO) run ./...
+	$(GO) run ./...

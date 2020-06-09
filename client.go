@@ -6,9 +6,9 @@ import (
 	"github.com/Finnhub-Stock-API/finnhub-go"
 )
 
-func NewFinnhubClient(apiKey string) (*finnhub.DefaultApiService, context.Context) {
+func NewFinnhubClient(ctx context.Context, apiKey string) (*finnhub.DefaultApiService, context.Context) {
 	client := finnhub.NewAPIClient(finnhub.NewConfiguration()).DefaultApi
-	auth := context.WithValue(context.Background(), finnhub.ContextAPIKey, finnhub.APIKey{
+	auth := context.WithValue(ctx, finnhub.ContextAPIKey, finnhub.APIKey{
 		Key: apiKey,
 	})
 
