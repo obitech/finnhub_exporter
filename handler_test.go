@@ -95,32 +95,32 @@ func TestQueryHandler(t *testing.T) {
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
-			name:           "endpoint present, missing stock id params",
+			name:           "endpoint not supported",
 			path:           "/test?endpoint=abc",
 			log:            log,
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name:           "endpoint present, symbol passed",
-			path:           "/test?endpoint=abc&symbol=AAPL",
+			path:           "/test?endpoint=companyprofile2&symbol=AAPL",
 			log:            log,
 			expectedStatus: http.StatusOK,
 		},
 		{
 			name:           "endpoint present, ISIN passed",
-			path:           "/test?endpoint=abc&isin=123",
+			path:           "/test?endpoint=companyprofile2&isin=123",
 			log:            log,
 			expectedStatus: http.StatusOK,
 		},
 		{
 			name:           "endpoint present, cusip passed",
-			path:           "/test?endpoint=abc&cusip=abc",
+			path:           "/test?endpoint=companyprofile2&cusip=abc",
 			log:            log,
 			expectedStatus: http.StatusOK,
 		},
 		{
-			name:           "endpoint present, all passed",
-			path:           "/test?endpoint=abc&cusip=abc&symbol=AAPL&isin=123",
+			name:           "endpoint present, all stock ids passed",
+			path:           "/test?endpoint=companyprofile2&cusip=abc&symbol=AAPL&isin=123",
 			log:            log,
 			expectedStatus: http.StatusOK,
 		},
@@ -132,10 +132,12 @@ func TestQueryHandler(t *testing.T) {
 			assert.NoError(t, err, "creating a test request shouldn't fail")
 
 			rr := httptest.NewRecorder()
-			handler := queryHandler(test.apiKey, test.log, true)
+			handler := queryHandler(nil, test.apiKey, test.log, true)
 			handler.ServeHTTP(rr, req)
 
-			assert.Equal(t, test.expectedStatus, rr.Code, rr.Body)
+			if assert.Equal(t, test.expectedStatus, rr.Code, rr.Body) {
+				t.Logf("Body: %q", rr.Body.String())
+			}
 		})
 	}
 }

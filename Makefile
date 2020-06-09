@@ -20,7 +20,7 @@ prepare:
 .PHONY: test
 ## test: runs unit tests
 test:
-	$(GO) test $(TEST_OPS) ./...
+	$(GO) test $(TEST_OPTS) ./...
 
 .PHONY: build
 ## build: builds finnhub_exporter
