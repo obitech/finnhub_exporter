@@ -10,23 +10,12 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-const promNamespace = "finnhub"
-
-// Querier can send queries to the Finnhub.io API
-type Querier interface {
-	Do(context.Context, *finnhub.DefaultApiService, *prometheus.Registry,
-		string) error
-}
-
 // CompanyProfile2 wraps finnhub.CompanyProfile2.
 // It provides basic company information.
 // Right now this might result in an error because of a bug in the library.
 // See https://github.com/Finnhub-Stock-API/finnhub-go/issues/1 for more
 // information.
-type CompanyProfile2 struct {
-	finnhub.CompanyProfile2
-	labels prometheus.Labels
-}
+type CompanyProfile2 finnhub.CompanyProfile2
 
 func (c CompanyProfile2) Do(ctx context.Context,
 	client *finnhub.DefaultApiService, registry *prometheus.Registry,
@@ -49,15 +38,16 @@ func (c CompanyProfile2) Do(ctx context.Context,
 			Name:      "company_profile_2",
 			Help:      "Displays general information of a company (free version of CompanyProfile)",
 		},
-		[]string{"country", "currency", "exchange", "ipo",
+		[]string{"symbol", "country", "currency", "exchange", "ipo",
 			"marketCapitalization", "name", "shareOutstanding", "ticker",
 			"weburl", "logo", "finnhubIndustry",
 		},
 	)
 	registry.MustRegister(cp2Gauge)
 	cp2Gauge.WithLabelValues(
-		profile.Country, profile.Currency, profile.Exchange, profile.Ipo,
-		fmt.Sprintf("%s", string(profile.MarketCapitalization)), profile.Name,
+		symbol, profile.Country, profile.Currency, profile.Exchange,
+		profile.Ipo, fmt.Sprintf("%s", string(profile.MarketCapitalization)),
+		profile.Name,
 		strconv.FormatFloat(float64(profile.ShareOutstanding), 'g', -1, 32),
 		profile.Ticker, profile.Weburl, profile.Logo, profile.FinnhubIndustry,
 	).Set(1)
