@@ -11,7 +11,6 @@ import (
 	"go.uber.org/zap"
 
 	"obitech/finnhub_exporter/query"
-	"obitech/finnhub_exporter/query/stock"
 )
 
 const (
@@ -23,7 +22,6 @@ const (
 var modules = map[string]query.Querier{
 	"companyprofile2": query.CompanyProfile2{},
 	"quote":           query.Quote{},
-	"stock-metric":    stock.Metric{},
 }
 
 // QueryHandler defines an uninstrumented Prometheus handler that allows for
@@ -33,20 +31,22 @@ func QueryHandler(apiKey string, log *zap.Logger, test bool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		endpointName := r.URL.Query().Get(endpointParam)
 		if endpointName == "" {
-			http.Error(w, fmt.Sprintf("URL parameter %q missing", endpointParam), http.StatusBadRequest)
+			http.Error(w, fmt.Sprintf("URL parameter missing: %s",
+				endpointParam), http.StatusBadRequest)
 			return
 		}
 
 		ep, ok := modules[endpointName]
 		if !ok {
-			http.Error(w, fmt.Sprintf("Endpoint %q is not supported", endpointParam), http.StatusBadRequest)
+			http.Error(w, fmt.Sprintf("Endpoint not supported: %s",
+				endpointParam), http.StatusBadRequest)
 			return
 		}
 
 		symbol := r.URL.Query().Get(symbolParam)
 		if symbol == "" {
-			http.Error(w, fmt.Sprintf("URL parameter %q missing", symbolParam),
-				http.StatusBadRequest)
+			http.Error(w, fmt.Sprintf("URL parameter missing: %s",
+				symbolParam), http.StatusBadRequest)
 			return
 		}
 
