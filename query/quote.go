@@ -2,20 +2,29 @@ package query
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/Finnhub-Stock-API/finnhub-go"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-// Quote wraps finnhub.Quote. Gets quote data for stocks.
-type Quote struct {
-	finnhub.Quote
-}
+// Quote gets quote data for stocks.
+type Quote struct{}
 
 // Do makes a request against the /quote endpoint.
 func (c Quote) Do(ctx context.Context,
 	client *finnhub.DefaultApiService, registry *prometheus.Registry,
 	symbol string) error {
+	quote, _, err := client.Quote(ctx, symbol)
+	if err != nil {
+		return err
+	}
+
+	// Check if symbol exists.
+	if quote.O == float32(0) && quote.C == float32(0) && quote.Pc == 0 {
+		return fmt.Errorf("symbol doesn't exists: %s", symbol)
+	}
+
 	subsystem := "quote"
 	gaugeLabels := []string{"symbol"}
 
@@ -49,11 +58,6 @@ func (c Quote) Do(ctx context.Context,
 	registry.MustRegister(lowGauge)
 	registry.MustRegister(currentGauge)
 	registry.MustRegister(prevCloseGauge)
-
-	quote, _, err := client.Quote(ctx, symbol)
-	if err != nil {
-		return err
-	}
 
 	openGauge.WithLabelValues(symbol).Set(float64(quote.O))
 	highGauge.WithLabelValues(symbol).Set(float64(quote.H))

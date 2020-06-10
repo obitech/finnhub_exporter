@@ -10,11 +10,8 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-// CompanyProfile2 wraps finnhub.CompanyProfile2.
-// It provides basic company information.
-type CompanyProfile2 struct {
-	finnhub.CompanyProfile2
-}
+// CompanyProfile2 provides basic company company information.
+type CompanyProfile2 struct{}
 
 // Do makes a request against the /stock/profile2 endpoint.
 func (c CompanyProfile2) Do(ctx context.Context,

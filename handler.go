@@ -11,6 +11,7 @@ import (
 	"go.uber.org/zap"
 
 	"obitech/finnhub_exporter/query"
+	"obitech/finnhub_exporter/query/stock"
 )
 
 const (
@@ -22,6 +23,7 @@ const (
 var modules = map[string]query.Querier{
 	"companyprofile2": query.CompanyProfile2{},
 	"quote":           query.Quote{},
+	"stock-metric":    stock.Metric{},
 }
 
 // QueryHandler defines an uninstrumented Prometheus handler that allows for
