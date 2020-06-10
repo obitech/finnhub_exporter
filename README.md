@@ -60,10 +60,11 @@ Parameter|Description
 
 ### Supported Endpoints
 
-Endpoint|Finnhub.io Endpoint|Description
+Endpoint|Finnhub.io Endpoint|Description|Example request
 ---|---|---
 `companyprofile2`|[/stock/profile2](https://finnhub.io/docs/api#company-profile2)|Get general information of a company.
 `quote`|[/quote](https://finnhub.io/docs/api#quote)|Get real-time quote data for US stocks.
+`metric`|[/stock/metric](https://finnhub.io/docs/api#company-basic-financials)|Get company basic financials such as margin, P/E ratio, 52-week high/low etc. Will use `metric` type `all`.
 
 ## Example
 

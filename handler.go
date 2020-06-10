@@ -23,6 +23,7 @@ const (
 var modules = map[string]query.Querier{
 	"companyprofile2": stock.CompanyProfile2{},
 	"quote":           query.Quote{},
+	"metric":          stock.Metric{},
 }
 
 // QueryHandler defines an uninstrumented Prometheus handler that allows for
