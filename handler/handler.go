@@ -10,34 +10,17 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 
-	"obitech/finnhub_exporter/endpoint"
+	"obitech/finnhub_exporter/query"
 )
 
 const (
 	promNamespace = "finnhub"
 	endpointParam = "endpoint"
 	symbolParam   = "symbol"
-	isinParam     = "isin"
-	cusipParam    = "cusip"
 )
 
-var modules = map[string]endpoint.RequestFn{
-	"companyprofile2": endpoint.CompanyProfile2{},
-}
-
-// getStockID retrieves a StockID from URL values.
-func getStockID(r *http.Request) (*endpoint.StockID, error) {
-	symbol := r.URL.Query().Get(symbolParam)
-	isin := r.URL.Query().Get(isinParam)
-	cusip := r.URL.Query().Get(cusipParam)
-	if symbol == "" && isin == "" && cusip == "" {
-		return nil, fmt.Errorf("need to set URL parameter %q or %q or %q", symbolParam, isinParam, cusipParam)
-	}
-	return &endpoint.StockID{
-		Symbol: symbol,
-		ISIN:   isin,
-		CUSIP:  cusip,
-	}, nil
+var modules = map[string]query.Querier{
+	"companyprofile2": query.CompanyProfile2{},
 }
 
 func QueryHandler(apiKey string, log *zap.Logger, test bool) http.HandlerFunc {
@@ -54,19 +37,19 @@ func QueryHandler(apiKey string, log *zap.Logger, test bool) http.HandlerFunc {
 			return
 		}
 
+		symbol := r.URL.Query().Get(symbolParam)
+		if symbol == "" {
+			http.Error(w, fmt.Sprintf("URL parameter %q missing", symbolParam),
+				http.StatusBadRequest)
+			return
+		}
+
 		// TODO: Adjust with Prometheus Scrape-Timout Header
 		ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
 		defer cancel()
 
-		client, auth := endpoint.NewFinnhubClient(ctx, apiKey)
+		client, auth := query.NewFinnhubClient(ctx, apiKey)
 		r = r.WithContext(auth)
-
-		stockID, err := getStockID(r)
-		if err != nil {
-			log.Debug("Unable to extract stock id from URL values", zap.Error(err))
-			http.Error(w, fmt.Sprintf("Unable to extract stock id: %v", err), http.StatusBadRequest)
-			return
-		}
 
 		// We don't want to unit test the actual API call against Finnhub.io
 		if test {
@@ -87,12 +70,12 @@ func QueryHandler(apiKey string, log *zap.Logger, test bool) http.HandlerFunc {
 		registry.MustRegister(querySuccessGauge)
 
 		start := time.Now()
-		err = ep.Do(auth, client, registry, stockID)
+		err := ep.Do(auth, client, registry, symbol)
 		duration := time.Since(start)
 		queryDurationGauge.Set(duration.Seconds())
 		if err != nil {
 			querySuccessGauge.Set(0)
-			log.Info("query to finnhub failed",
+			log.Error("query to finnhub failed",
 				zap.Error(err),
 				zap.Duration("query_duration", duration),
 			)
@@ -100,7 +83,7 @@ func QueryHandler(apiKey string, log *zap.Logger, test bool) http.HandlerFunc {
 			querySuccessGauge.Set(1)
 			log.Info("query to finnhub successful",
 				zap.String("endpoint", endpointName),
-				zap.String("stockID", stockID.String()),
+				zap.String("symbol", symbol),
 				zap.Duration("query_duration", duration),
 			)
 		}

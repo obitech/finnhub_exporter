@@ -4,7 +4,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func NewLogger(level string) (*zap.Logger, error) {
+func newLogger(level string) (*zap.Logger, error) {
 	atom := zap.NewAtomicLevel()
 
 	switch level {
@@ -25,7 +25,7 @@ func NewLogger(level string) (*zap.Logger, error) {
 		DisableStacktrace: false,
 		EncoderConfig:     zap.NewProductionEncoderConfig(),
 		Encoding:          "json",
-		ErrorOutputPaths:  []string{"stdout"},
+		ErrorOutputPaths:  []string{"s"},
 		Level:             atom,
 		OutputPaths:       []string{"stdout"},
 	}
