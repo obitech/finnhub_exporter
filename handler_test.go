@@ -31,14 +31,26 @@ func TestQueryHandler(t *testing.T) {
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
-			name:           "endpoint present, symbol missing",
+			name:           "cp2 endpoint present, symbol missing",
 			path:           "/test?endpoint=companyprofile2",
 			log:            log,
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
-			name:           "endpoint present, symbol passed",
+			name:           "cp2 endpoint present, symbol passed",
 			path:           "/test?endpoint=companyprofile2&symbol=AAPL",
+			log:            log,
+			expectedStatus: http.StatusOK,
+		},
+		{
+			name:           "quote endpoint present, symbol missing",
+			path:           "/test?endpoint=quote",
+			log:            log,
+			expectedStatus: http.StatusBadRequest,
+		},
+		{
+			name:           "quote endpoint present, symbol passed",
+			path:           "/test?endpoint=quote&symbol=AAPL",
 			log:            log,
 			expectedStatus: http.StatusOK,
 		},

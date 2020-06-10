@@ -33,10 +33,10 @@ func init() {
 }
 
 func main() {
-	Execute()
+	execute()
 }
 
-func Execute() {
+func execute() {
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}

@@ -21,8 +21,12 @@ const (
 
 var modules = map[string]query.Querier{
 	"companyprofile2": query.CompanyProfile2{},
+	"quote":           query.Quote{},
 }
 
+// QueryHandler defines an uninstrumented Prometheus handler that allows for
+// dynamic queries against the Finnhub.io API.
+// Pass the wished endpoint and stock symbol to make a query.
 func QueryHandler(apiKey string, log *zap.Logger, test bool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		endpointName := r.URL.Query().Get(endpointParam)

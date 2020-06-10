@@ -7,7 +7,7 @@ GOARCH		?= amd64
 
 .PHONY: all
 ## all: runs 'prepare', 'test' and 'build'
-all: prepare test build
+all: prepare lint test build
 
 .PHONY: help
 ## help: prints this help message
@@ -20,6 +20,11 @@ help:
 prepare:
 	$(GO) mod tidy
 	$(GO) fmt -x
+
+.PHONY: lint
+## lint: runs golint
+lint:
+	golint ./...
 
 .PHONY: test
 ## test: runs unit tests

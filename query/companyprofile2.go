@@ -12,11 +12,11 @@ import (
 
 // CompanyProfile2 wraps finnhub.CompanyProfile2.
 // It provides basic company information.
-// Right now this might result in an error because of a bug in the library.
-// See https://github.com/Finnhub-Stock-API/finnhub-go/issues/1 for more
-// information.
-type CompanyProfile2 finnhub.CompanyProfile2
+type CompanyProfile2 struct {
+	finnhub.CompanyProfile2
+}
 
+// Do makes a request against the /stock/profile2 endpoint.
 func (c CompanyProfile2) Do(ctx context.Context,
 	client *finnhub.DefaultApiService, registry *prometheus.Registry,
 	symbol string) error {
