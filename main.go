@@ -45,8 +45,7 @@ func execute() {
 func run(cmd *cobra.Command, args []string) error {
 	log, err := newLogger(logLevel)
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		return err
 	}
 	defer log.Sync()
 
