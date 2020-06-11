@@ -43,7 +43,7 @@ func (c CompanyProfile2) Do(ctx context.Context,
 	registry.MustRegister(cp2Gauge)
 	cp2Gauge.WithLabelValues(
 		symbol, profile.Country, profile.Currency, profile.Exchange,
-		profile.Ipo, fmt.Sprintf("%s", string(profile.MarketCapitalization)),
+		profile.Ipo, strconv.FormatFloat(float64(profile.MarketCapitalization), 'g', -1, 32),
 		profile.Name,
 		strconv.FormatFloat(float64(profile.ShareOutstanding), 'g', -1, 32),
 		profile.Ticker, profile.Weburl, profile.Logo, profile.FinnhubIndustry,

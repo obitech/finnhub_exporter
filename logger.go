@@ -25,7 +25,7 @@ func newLogger(level string) (*zap.Logger, error) {
 		DisableStacktrace: false,
 		EncoderConfig:     zap.NewProductionEncoderConfig(),
 		Encoding:          "json",
-		ErrorOutputPaths:  []string{"s"},
+		ErrorOutputPaths:  []string{"stdout"},
 		Level:             atom,
 		OutputPaths:       []string{"stdout"},
 	}
