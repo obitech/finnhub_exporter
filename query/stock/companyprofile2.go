@@ -1,4 +1,4 @@
-package query
+package stock
 
 import (
 	"context"
@@ -8,6 +8,8 @@ import (
 	"github.com/Finnhub-Stock-API/finnhub-go"
 	"github.com/antihax/optional"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"obitech/finnhub_exporter/config"
 )
 
 // CompanyProfile2 provides basic company company information.
@@ -31,7 +33,7 @@ func (c CompanyProfile2) Do(ctx context.Context,
 
 	cp2Gauge := prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Namespace: promNamespace,
+			Namespace: config.PromNamespace,
 			Name:      "company_profile_2",
 			Help:      "Displays general information of a company (free version of CompanyProfile)",
 		},

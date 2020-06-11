@@ -11,6 +11,7 @@ import (
 	"go.uber.org/zap"
 
 	"obitech/finnhub_exporter/query"
+	"obitech/finnhub_exporter/query/stock"
 )
 
 const (
@@ -20,7 +21,7 @@ const (
 )
 
 var modules = map[string]query.Querier{
-	"companyprofile2": query.CompanyProfile2{},
+	"companyprofile2": stock.CompanyProfile2{},
 	"quote":           query.Quote{},
 }
 

@@ -6,6 +6,8 @@ import (
 
 	"github.com/Finnhub-Stock-API/finnhub-go"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"obitech/finnhub_exporter/config"
 )
 
 // Quote gets quote data for stocks.
@@ -26,7 +28,7 @@ func (c Quote) Do(ctx context.Context,
 	}
 
 	subsystem := "quote"
-	gaugeLabels := []string{"symbol"}
+	gaugeLabels := []string{config.SymbolLabel}
 
 	openGauge := prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Namespace: promNamespace,
@@ -34,22 +36,22 @@ func (c Quote) Do(ctx context.Context,
 		Name:      "open",
 	}, gaugeLabels)
 	highGauge := prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Namespace: promNamespace,
+		Namespace: config.PromNamespace,
 		Subsystem: subsystem,
 		Name:      "high",
 	}, gaugeLabels)
 	lowGauge := prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Namespace: promNamespace,
+		Namespace: config.PromNamespace,
 		Subsystem: subsystem,
 		Name:      "low",
 	}, gaugeLabels)
 	currentGauge := prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Namespace: promNamespace,
+		Namespace: config.PromNamespace,
 		Subsystem: subsystem,
 		Name:      "current",
 	}, gaugeLabels)
 	prevCloseGauge := prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Namespace: promNamespace,
+		Namespace: config.PromNamespace,
 		Subsystem: subsystem,
 		Name:      "prev_close",
 	}, gaugeLabels)
