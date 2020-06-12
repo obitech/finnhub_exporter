@@ -60,7 +60,7 @@ Parameter|Description
 
 ### Supported Endpoints
 
-Endpoint|Finnhub.io Endpoint|Description|Example request
+Endpoint|Finnhub.io Endpoint|Description
 ---|---|---
 `companyprofile2`|[/stock/profile2](https://finnhub.io/docs/api#company-profile2)|Get general information of a company.
 `quote`|[/quote](https://finnhub.io/docs/api#quote)|Get real-time quote data for US stocks.
