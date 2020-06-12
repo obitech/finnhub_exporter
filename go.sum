@@ -2,8 +2,6 @@ cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMT
 cloud.google.com/go v0.34.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
-github.com/Finnhub-Stock-API/finnhub-go v1.1.2 h1:c3EywwhjT7FrXteVkafDpAxnhz8GsjOBPna4c5evLS4=
-github.com/Finnhub-Stock-API/finnhub-go v1.1.2/go.mod h1:nldVqdx3R6XAuYvZz6Kx1FJsuwCnv402fVLhR/GO2U8=
 github.com/Finnhub-Stock-API/finnhub-go v1.1.3 h1:1lVTvxNHUavVTKsMa7RmTM3SjmnLwhkkI/Ideu/NgWY=
 github.com/Finnhub-Stock-API/finnhub-go v1.1.3/go.mod h1:nldVqdx3R6XAuYvZz6Kx1FJsuwCnv402fVLhR/GO2U8=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
