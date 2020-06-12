@@ -71,7 +71,10 @@ Endpoint|Finnhub.io Endpoint|Description
 Getting the latest quote from `AAPL`:
 
 ```
-$ curl "localhost:9780/query?endpoint=quote&symbol=AAPL"
+curl "localhost:9780/query?endpoint=quote&symbol=AAPL"
+```
+
+```
 # HELP finnhub_query_duration Returns how long a query to the Finnhub API took to complete in seconds
 # TYPE finnhub_query_duration gauge
 finnhub_query_duration 0.417014498
