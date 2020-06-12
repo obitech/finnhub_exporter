@@ -3,9 +3,10 @@ module obitech/finnhub_exporter
 go 1.14
 
 require (
-	github.com/Finnhub-Stock-API/finnhub-go v1.1.2
+	github.com/Finnhub-Stock-API/finnhub-go v1.1.3
 	github.com/antihax/optional v1.0.0
 	github.com/golang/protobuf v1.4.2 // indirect
+	github.com/magiconair/properties v1.8.0
 	github.com/prometheus/client_golang v1.6.0
 	github.com/prometheus/common v0.10.0 // indirect
 	github.com/prometheus/procfs v0.1.1 // indirect

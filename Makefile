@@ -6,7 +6,7 @@ GOOS		?= darwin
 GOARCH		?= amd64
 
 .PHONY: all
-## all: runs 'prepare', 'test' and 'build'
+## all: runs 'prepare', 'lint', 'test' and 'build'
 all: prepare lint test build
 
 .PHONY: help
@@ -22,9 +22,10 @@ prepare:
 	$(GO) fmt -x
 
 .PHONY: lint
-## lint: runs golint
+## lint: runs golint and go vet
 lint:
 	golint ./...
+	$(GO) vet ./...
 
 .PHONY: test
 ## test: runs unit tests
@@ -34,7 +35,8 @@ test:
 .PHONY: build
 ## build: builds finnhub_exporter
 build:
-	GO111MODULE=on CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) $(GO) build -o $(BIN_DIR)/$(BIN_NAME) .
+	GO111MODULE=on CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) \
+		$(GO) build -o $(BIN_DIR)/$(BIN_NAME)-$(GOOS)-$(GOARCH) .
 
 .PHONY: run
 ## run: runs finnhub_exporter

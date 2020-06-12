@@ -34,6 +34,7 @@ func (c CompanyProfile2) Do(ctx context.Context,
 	cp2Gauge := prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Namespace: config.PromNamespace,
+			Subsystem: "stock",
 			Name:      "company_profile_2",
 			Help:      "Displays general information of a company (free version of CompanyProfile)",
 		},

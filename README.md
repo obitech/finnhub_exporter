@@ -64,13 +64,17 @@ Endpoint|Finnhub.io Endpoint|Description
 ---|---|---
 `companyprofile2`|[/stock/profile2](https://finnhub.io/docs/api#company-profile2)|Get general information of a company.
 `quote`|[/quote](https://finnhub.io/docs/api#quote)|Get real-time quote data for US stocks.
+`metric`|[/stock/metric](https://finnhub.io/docs/api#company-basic-financials)|Get company basic financials such as margin, P/E ratio, 52-week high/low etc. Will use `metric` type `all`.
 
 ## Example
 
 Getting the latest quote from `AAPL`:
 
 ```
-$ curl "localhost:9780/query?endpoint=quote&symbol=AAPL"
+curl "localhost:9780/query?endpoint=quote&symbol=AAPL"
+```
+
+```
 # HELP finnhub_query_duration Returns how long a query to the Finnhub API took to complete in seconds
 # TYPE finnhub_query_duration gauge
 finnhub_query_duration 0.417014498
