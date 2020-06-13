@@ -48,3 +48,11 @@ jobs:
         run: make prepare
       - name: Build
         run: make build GOOS=$GOOS GOARCH=$GOARCH
+  build-docker:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build Docker image
+        run: make build/docker DOCKER_IMAGE_TAG=$GITHUB_SHA
