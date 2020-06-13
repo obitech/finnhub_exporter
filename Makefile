@@ -1,9 +1,11 @@
-GO 			?= go
-TEST_OPTS	?= -test.v
-BIN_DIR 	?= $(shell pwd)/bin
-BIN_NAME 	?= finnhub_exporter
-GOOS		?= darwin
-GOARCH		?= amd64
+GO ?= go
+TEST_OPTS ?= -test.v
+BIN_DIR ?= $(shell pwd)/bin
+BIN_NAME ?= finnhub_exporter
+GOOS ?= darwin
+GOARCH ?= amd64
+DOCKER_IMAGE_NAME ?= obitech/finnhub_exporter
+DOCKER_IMAGE_TAG ?= master
 
 .PHONY: all
 ## all: runs 'prepare', 'lint', 'test' and 'build'
@@ -37,6 +39,11 @@ test:
 build:
 	GO111MODULE=on CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) \
 		$(GO) build -o $(BIN_DIR)/$(BIN_NAME)-$(GOOS)-$(GOARCH) .
+
+.PHONY: build/docker
+## build/docker: builds the Docker container for finnhub_exporter
+build/docker:
+	docker build -t $(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG) .
 
 .PHONY: run
 ## run: runs finnhub_exporter
