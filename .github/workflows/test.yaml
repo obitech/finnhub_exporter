@@ -1,4 +1,4 @@
-name: Test & build finnhub_exporter
+name: test_and_build
 
 on:
   push:

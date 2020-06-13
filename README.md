@@ -1,5 +1,8 @@
 # [finnhub_exporter](https://github.com/obitech/finnhub_exporter)
 
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/obitech/finnhub_exporter/test_and_build)  
+![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/obitech/finnhub_exporter)
+
 The exporter allows for exposing financial data from 
 [Finnhub.io](https://finnhub.io) as Prometheus metrics. 
 
